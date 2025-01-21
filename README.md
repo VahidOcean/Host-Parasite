@@ -49,17 +49,16 @@ for file in samples/*.fq.gz; do
     read_count=$((read_count / 4))
     echo "File: $file, Read Count: $read_count" >> "$output_file"
 done
-#!/bin/bash
+
 # SNP Calling Script
 
 module load Stacks
 denovo_map.pl --samples samples/ --paired --popmap Fish.txt -o Fish.with.het.filter \
     -M 2 -n 3 -p 0.8 -X "populations: --max-obs-het 0.6 --write-random-snp --vcf"
-    # Filtering Script
 
-module load VCFtools
 
 # Filter based on missing data and minor allele frequency
+module load VCFtools
 vcftools --vcf populations.snps.vcf --max-missing 0.5 --maf 0.04 --minDP 3 \
     --recode --recode-INFO-all --out miss50
 
