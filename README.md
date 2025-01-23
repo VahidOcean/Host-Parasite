@@ -72,7 +72,6 @@ vcftools --vcf miss50.INDV.recode.vcf --min-meanDP 5 --recode --recode-INFO-all 
 
 ### Hetrozygosity 
 setwd("/Users/sepva552/Desktop/GBS/Fish and Copepod/Fish/Fish.with.het.filter/Whole.50")
-
 library(vcfR)
 vcf <- read.vcfR("final.50.recode.vcf")
 geno <- extract.gt(vcf)
