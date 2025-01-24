@@ -1,0 +1,56 @@
+# Hetrosigosity measurment
+# Load required libraries
+library(vcfR)
+library(ggplot2)
+
+# Function to calculate heterozygosity
+calculate_heterozygosity <- function(vcf_file_path) {
+  vcf <- read.vcfR(vcf_file_path)
+  geno <- extract.gt(vcf)
+  het <- apply(geno, 2, function(x) sum(x == "0/1", na.rm = TRUE) / length(x))
+  return(het)
+}
+
+# File paths
+fish_vcf_path <- "data/Fish/final.50.recode.vcf"
+copepod_vcf_path <- "data/Copepod/final.50.recode.vcf"
+
+# Calculate heterozygosity for fish and copepods
+fish_het <- calculate_heterozygosity(fish_vcf_path)
+copepod_het <- calculate_heterozygosity(copepod_vcf_path)
+
+# Shapiro-Wilk Normality Test
+cat("Shapiro-Wilk Normality Test Results:\n")
+fish_shapiro <- shapiro.test(fish_het)
+copepod_shapiro <- shapiro.test(copepod_het)
+cat("Fish heterozygosity p-value:", fish_shapiro$p.value, "\n")
+cat("Copepod heterozygosity p-value:", copepod_shapiro$p.value, "\n")
+
+# Non-parametric Wilcoxon Rank-Sum Test
+cat("\nWilcoxon Rank-Sum Test Results:\n")
+wilcox_test <- wilcox.test(fish_het, copepod_het, exact = FALSE)
+print(wilcox_test)
+
+# Combine the data for plotting
+group <- c(rep("Fish", length(fish_het)), rep("Copepod", length(copepod_het)))
+heterozygosity <- c(fish_het, copepod_het)
+data <- data.frame(Group = group, Heterozygosity = heterozygosity)
+
+# Violin plot with boxplot overlay
+ggplot(data, aes(x = Group, y = Heterozygosity, fill = Group)) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.1, fill = "white", outlier.shape = NA) +
+  theme_minimal() +
+  labs(title = "Heterozygosity Distribution: Fish vs. Copepods",
+       x = "Group",
+       y = "Heterozygosity") +
+  scale_fill_manual(values = c("Fish" = "skyblue", "Copepod" = "salmon"))
+
+# Boxplot
+ggplot(data, aes(x = Group, y = Heterozygosity, fill = Group)) +
+  geom_boxplot(outlier.color = "red", outlier.shape = 16, notch = TRUE) +
+  theme_minimal() +
+  labs(title = "Boxplot: Heterozygosity of Fish vs. Copepods",
+       x = "Group",
+       y = "Heterozygosity") +
+  scale_fill_manual(values = c("Fish" = "skyblue", "Copepod" = "salmon"))
