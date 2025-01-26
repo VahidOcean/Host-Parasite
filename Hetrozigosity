@@ -3,17 +3,6 @@
 library(vcfR)
 library(ggplot2)
 
-# Function to calculate heterozygosity
-calculate_heterozygosity <- function(vcf_file_path) {
-  vcf <- read.vcfR(vcf_file_path)
-  geno <- extract.gt(vcf)
-  het <- apply(geno, 2, function(x) sum(x == "0/1", na.rm = TRUE) / length(x))
-  return(het)
-}
-
-# File paths
-fish_vcf_path <- "data/Fish/final.50.recode.vcf"
-copepod_vcf_path <- "data/Copepod/final.50.recode.vcf"
 
 # Calculate heterozygosity for fish and copepods
 fish_het <- calculate_heterozygosity(fish_vcf_path)
