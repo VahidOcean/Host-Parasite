@@ -55,7 +55,7 @@ done
 
 module load Stacks
 denovo_map.pl --samples samples/ --paired --popmap Fish.txt -o Fish.with.het.filter \
-    -M 2 -n 3 -p 0.8 -X "populations: --max-obs-het 0.6 --write-random-snp --vcf"
+    -M 2 -m 2-n 3 -p 0.8 -X "populations: --max-obs-het 0.6 --write-random-snp --vcf"
 
 
 # Filter based on missing data and minor allele frequency
