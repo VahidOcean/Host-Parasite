@@ -51,24 +51,33 @@ for file in samples/*.fq.gz; do
     echo "File: $file, Read Count: $read_count" >> "$output_file"
 done
 
-# SNP Calling Script
+# SNP Calling Script(Macrourus whirsoni(host))
 
 module load Stacks
 denovo_map.pl --samples samples/ --paired --popmap Fish.txt -o Fish.with.het.filter \
-    -M 2 -m 2-n 3 -p 0.8 -X "populations: --max-obs-het 0.6 --write-random-snp --vcf"
+    -M 2 -m 2-n 3 -r 0.8 -X "populations: --max-obs-het 0.6 --write-random-snp --vcf"
 
 
 # Filter based on missing data and minor allele frequency
 module load VCFtools
-vcftools --vcf populations.snps.vcf --max-missing 0.5 --maf 0.04 --minDP 3 \
-    --recode --recode-INFO-all --out miss50
+vcftools --vcf populations.snps.vcf --min-meanDP 5 --max-meanDP 70 --recode --recode-INFO-all
+mv out.recode.vcf depth_filtered.vcf
+vcftools --vcf depth_filtered.vcf --max-missing 0.39 --recode --recode-INFO-all
+mv out.recode.vcf depth_maxmiss39.vcf
 
-# Remove individuals with more than 80% missing data
-vcftools --vcf miss50.recode.vcf --missing-indv
-awk '$5 > 0.80' out.imiss | cut -f1 > lowDP-80.indv
-vcftools --vcf miss50.recode.vcf --remove lowDP-80.indv --recode --recode-INFO-all --out miss50.INDV
 
-# Apply additional filtering
-vcftools --vcf miss50.INDV.recode.vcf --min-meanDP 5 --recode --recode-INFO-all --out final_snps
+# SNP Calling Script(Lophoura szidati((parasite))
+
+module load Stacks
+denovo_map.pl --samples samples/ --paired --popmap Fish.txt -o Fish.with.het.filter \
+    -M 2 -m 2-n 3 -r 0.7 -X "populations: --max-obs-het 0.6 --write-random-snp --vcf"
+
+
+# Filter based on missing data and minor allele frequency
+module load VCFtools
+vcftools --vcf populations.snps.vcf --min-meanDP 5 --max-meanDP 70 --recode --recode-INFO-all
+mv out.recode.vcf depth_filtered.vcf
+vcftools --vcf depth_filtered.vcf --max-missing 0.4 --recode --recode-INFO-all
+mv out.recode.vcf depth_maxmiss40.vcf
 
 
