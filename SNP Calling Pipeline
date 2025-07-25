@@ -54,9 +54,7 @@ done
 # SNP Calling Script(Macrourus whirsoni(host))
 
 module load Stacks
-denovo_map.pl --samples samples/ --paired --popmap Fish.txt -o Fish.with.het.filter \
-    -M 2 -m 2-n 3 -r 0.8 -X "populations: --max-obs-het 0.6 --write-random-snp --vcf"
-
+denovo_map.pl --samples samples/ --paired --popmap Fish.txt -o test1 -M 2 -m 2 -n 3 -r 0.8 -X "populations: --max-obs-het 0.6 --write-random-snp --vcf"
 
 # Filter based on missing data and minor allele frequency
 module load VCFtools
@@ -69,8 +67,8 @@ mv out.recode.vcf depth_maxmiss39.vcf
 # SNP Calling Script(Lophoura szidati((parasite))
 
 module load Stacks
-denovo_map.pl --samples samples/ --paired --popmap Fish.txt -o Fish.with.het.filter \
-    -M 2 -m 2-n 3 -r 0.7 -X "populations: --max-obs-het 0.6 --write-random-snp --vcf"
+denovo_map.pl --samples samples/ --paired --popmap Cop.txt -o M.N \
+    -M 2 -m 2 -n 3 -r 0.7 -X "populations: --max-obs-het 0.6 --write-random-snp --vcf"
 
 
 # Filter based on missing data and minor allele frequency
