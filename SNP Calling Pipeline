@@ -54,13 +54,13 @@ done
 # SNP Calling Script(Macrourus whirsoni(host))
 
 module load Stacks
-denovo_map.pl --samples samples/ --paired --popmap Fish.txt -o test1 -M 2 -m 2 -n 3 -r 0.8 -X "populations: --max-obs-het 0.6 --write-random-snp --vcf"
+denovo_map.pl --samples samples/ --paired --popmap Fish.txt -o test1 -M 1 -m 3 -n 2 -r 0.7 -X "populations: --max-obs-het 0.6 --write-random-snp --vcf"
 
 # Filter based on missing data and minor allele frequency
 module load VCFtools
-vcftools --vcf populations.snps.vcf --min-meanDP 5 --max-meanDP 70 --recode --recode-INFO-all
+vcftools --vcf populations.snps.vcf --min-meanDP 4 --max-meanDP 60 --recode --recode-INFO-all
 mv out.recode.vcf depth_filtered.vcf
-vcftools --vcf depth_filtered.vcf --max-missing 0.4 --recode --recode-INFO-all
+vcftools --vcf depth_filtered.vcf --max-missing 0.2 --recode --recode-INFO-all
 mv out.recode.vcf depth_maxmiss39.vcf
 
 
