@@ -61,7 +61,21 @@ module load VCFtools
 vcftools --vcf populations.snps.vcf --min-meanDP 4 --max-meanDP 60 --recode --recode-INFO-all
 mv out.recode.vcf depth_filtered.vcf
 vcftools --vcf depth_filtered.vcf --max-missing 0.2 --recode --recode-INFO-all
-mv out.recode.vcf depth_maxmiss39.vcf
+mv out.recode.vcf depth_maxmiss40.vcf
+
+###### Average Depth of Coverage per Locus
+
+vcftools --vcf final.recode.vcf --site-mean-depth --out site_depth
+
+# Then calculate the average depth:
+awk '{sum+=$3} END {print "Average depth per locus:", sum/NR}' site_depth.ldepth.mean
+
+################## Mean Proportion of Missing Data per Individual
+vcftools --vcf final.recode.vcf --missing-indv --out missing_ind
+
+# Then calculate the mean missing proportion:
+awk 'NR>1 {sum+=$5} END {print "Mean missing data per individual:", sum/(NR-1)}' missing_ind.imiss
+
 
 
 # SNP Calling Script(Lophoura szidati((parasite))
